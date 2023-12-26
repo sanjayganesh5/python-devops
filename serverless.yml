@@ -1,0 +1,76 @@
+service: serverlessProject
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.10
+  region: ap-south-1
+  stage: dev
+  memorySize: 128
+  timeout: 10
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+          Resource:
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.queueFunctionOne.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.queueFunctionTwo.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.jobFunctionOne.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.jobFunctionTwo.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.ccFunctionOne.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.ccFunctionTwo.Properties.LogGroupName}:*
+
+functions:
+  serverlessFunction:
+    name: serverlessFunction
+    handler: the_platform.handler
+    logRetentionInDays: 30
+    url: true
+    environment:
+      APP_ENV: ${self:provider.stage}
+    events:
+      - http:
+          path: serverlessFunction/{resource}/{functionName}
+          method: any
+
+resources:
+  Resources:
+    queueFunctionOne:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queueFunctionOne
+        RetentionInDays: 30
+    queueFunctionTwo:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queueFunctionTwo
+        RetentionInDays: 30
+    jobFunctionOne:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/job/${self:provider.stage}-jobFunctionOne
+        RetentionInDays: 30
+    jobFunctionTwo:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/job/${self:provider.stage}-jobFunctionTwo
+        RetentionInDays: 30
+    ccFunctionOne:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-ccFunctionOne
+        RetentionInDays: 30
+    ccFunctionTwo:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-ccFunctionTwo
+        RetentionInDays: 30
+
+package:
+  exclude:
+    - README.md
+    - azure-pipelines.yml
+    - application.properties

@@ -1,6 +1,5 @@
 import importlib
 from urllib import parse
-from utility import get_property, get_cloudwatch_logger
 
 TEXT_CONTENT_TYPE = 'text/plain'
 
@@ -16,39 +15,44 @@ def handler_response(**kwargs):
 
 
 def function_handler(url_path, event):
+    print(f'url_path: {url_path}, event: {event}')
     function_name = url_path[url_path.rindex('/') + 1:]
+    print(f'function_name: {function_name}')
+    function_name = function_name.replace('-', '_')
     try:
         if 'queue' in url_path:
-            api_function = getattr(importlib.import_module('queue'), function_name)
+            api_function = getattr(importlib.import_module('queues'), function_name)
         elif 'job' in url_path:
-            api_function = getattr(importlib.import_module('job'), function_name)
+            api_function = getattr(importlib.import_module('jobs'), function_name)
         elif 'custom-command' in url_path:
-            api_function = getattr(importlib.import_module('custom_command'), function_name)
+            api_function = getattr(importlib.import_module('custom_commands'), function_name)
         else:
             raise ModuleNotFoundError(f'{function_name} not found')
     except ModuleNotFoundError:
         return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{function_name} not found')
     else:
-        return api_function.main(event)
+        body = event['body']
+        query_params = event['queryStringParameters']
+        return api_function.main(query_params=query_params, body=body)
 
 
 def api_handler(resource, function_name, event):
-    query_params = event['queryParameters']
-    body = event['body']
-    print(f'function_name: {function_name}, query_params: {query_params}, body: {body}')
+    print(f'function_name: {function_name}, event: {event}')
     try:
         if resource == 'queue':
-            api_function = getattr(importlib.import_module('queue'), function_name)
+            api_function = getattr(importlib.import_module('queues'), function_name)
         elif resource == 'job':
-            api_function = getattr(importlib.import_module('job'), function_name)
+            api_function = getattr(importlib.import_module('jobs'), function_name)
         elif resource == 'custom-command':
-            api_function = getattr(importlib.import_module('custom_command'), function_name)
+            api_function = getattr(importlib.import_module('custom_commands'), function_name)
         else:
             raise ModuleNotFoundError(f'{resource} not found')
     except ModuleNotFoundError:
         return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{resource} not found')
     else:
-        return api_function.main(query_params, body)
+        body = event['body']
+        query_params = event['queryStringParameters']
+        return api_function.main(query_params=query_params, body=body)
 
 
 def handler(event, context):
