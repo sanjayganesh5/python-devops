@@ -6,24 +6,44 @@ trigger:
 pool: Default
 
 steps:
-  - task: CmdLine@2
-    inputs:
-      script: |
-        echo $(Build.BinariesDirectory)
-        echo $(Build.ArtifactStagingDirectory)
-        echo $(Build.SourcesDirectory)
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)'
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-      replaceExistingArchive: true
-    displayName: 'Zip Artifact'
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo $(Build.BinariesDirectory)
+      echo $(Build.ArtifactStagingDirectory)
+      echo $(Build.SourcesDirectory)
+  
+# Prepare Analysis Configuration task
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: $(sonarEndpoint)
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: $(pythonProjectKey)
+    extraProperties: |
+      sonar.exclusions=venv/**/*,.idea/**/*,coverage-reports/*,README.md,azure-pipelines.yml,application.properties,requirements.txt
 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'application'
-      publishLocation: 'Container'
-    displayName: 'Publish Artifact'
+# Run Code Analysis task
+- task: SonarQubeAnalyze@5
+
+# Publish Quality Gate Result task
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
+
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+  displayName: 'Zip Artifact'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'application'
+    publishLocation: 'Container'
+  displayName: 'Publish Artifact'
