@@ -40,12 +40,12 @@ steps:
 # Prepare Analysis Configuration task
 - task: SonarQubePrepare@5
   inputs:
-    SonarQube: $(sonarUrl)
+    SonarQube: 'https://e347-103-65-23-82.ngrok-free.app'
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: $(sonarProjectKey)
+    cliProjectKey: 'DevOps_DevOps_AYysdB97HE1or5nhUmjZ'
     extraProperties: |
-      sonar.exclusions=$(sonarExclusions)
+      sonar.exclusions='$(sonarExclusions)'
 
 # Run Code Analysis task
 - task: SonarQubeAnalyze@5
