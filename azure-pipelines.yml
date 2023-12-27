@@ -7,11 +7,12 @@ pool: Default
 
 steps:
 - task: CmdLine@2
+  displayName: 'Print Build Directories'
   inputs:
     script: |
-      echo $(Build.BinariesDirectory)
-      echo $(Build.ArtifactStagingDirectory)
-      echo $(Build.SourcesDirectory)
+      echo BinariesDirectory: $(Build.BinariesDirectory)
+      echo ArtifactStagingDirectory: $(Build.ArtifactStagingDirectory)
+      echo SourcesDirectory: $(Build.SourcesDirectory)
 
 - task: UsePythonVersion@0
   displayName: 'Install Python 3.10'
@@ -21,12 +22,12 @@ steps:
     architecture: 'x64'
 
 - task: CmdLine@2
-  displayName: 'Install Coverage'
+  displayName: 'Install requirements'
   inputs:
     workingDirectory: '$(Build.SourcesDirectory)'
     script: |
       python -m pip install --upgrade pip
-      pip install coverage
+      pip install -r requirements.txt
 
 - task: CmdLine@2
   displayName: 'Generate Coverage Report'
