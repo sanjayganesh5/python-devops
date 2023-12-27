@@ -33,7 +33,7 @@ steps:
   inputs:
     workingDirectory: '$(Build.SourcesDirectory)'
     script: |
-      coverage rum -m unittest discover
+      coverage run -m unittest discover
       coverage xml -o coverage-reports/coverage-serverless.xml
 
 - task: CmdLine@2
