@@ -37,14 +37,23 @@ steps:
       coverage run -m unittest discover
       coverage xml -o coverage-reports/coverage-serverless.xml
 
-- task: CmdLine@2
-  displayName: 'Send Coverage Report to SonarQube'
+# Prepare Analysis Configuration task
+- task: SonarQubePrepare@5
   inputs:
-    workingDirectory: '$(Build.SourcesDirectory)'
-    script: |
-      sonar-scanner -X \
-      -Dsonar.sources=. \
-      -Dsonar.host.url=$(sonarUrl)
+    SonarQube: $(sonarUrl)
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: $(sonarProjectKey)
+    extraProperties: |
+      sonar.exclusions=$(sonarExclusions)
+
+# Run Code Analysis task
+- task: SonarQubeAnalyze@5
+
+# Publish Quality Gate Result task
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
 
 - task: ArchiveFiles@2
   inputs:
