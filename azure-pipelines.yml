@@ -12,6 +12,41 @@ steps:
       echo $(Build.BinariesDirectory)
       echo $(Build.ArtifactStagingDirectory)
       echo $(Build.SourcesDirectory)
+
+- task: UsePythonVersion@0
+  displayName: 'Install Python 3.10'
+  inputs:
+    versionSpec: '3.10'
+    addToPath: true
+    architecture: 'x64'
+
+- task: CmdLine@2
+  displayName: 'Install Coverage'
+  inputs:
+    workingDirectory: '$(Build.SourcesDirectory)'
+    script: |
+      python -m pip install --upgrade pip
+      pip install coverage
+
+- task: CmdLine@2
+  displayName: 'Generate Coverage Report'
+  inputs:
+    workingDirectory: '$(Build.SourcesDirectory)'
+    script: |
+      coverage rum -m unittest discover
+      coverage xml -o coverage-reports/coverage-serverless.xml
+
+- task: CmdLine@2
+  displayName: 'Send Coverage Report to SonarQube'
+  inputs:
+    workingDirectory: '$(Build.SourcesDirectory)'
+    script: |
+      sonar-scanner \
+      -Dsonar.projectKey=$(sonarProjectKey) \
+      -Dsonar.host.url=$(sonarUrl) \
+      -Dsonar.login=$(sonarToken) \
+      -Dsonar.exclusions=$(sonarExclusions)
+
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.SourcesDirectory)'
@@ -20,6 +55,7 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
   displayName: 'Zip Artifact'
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
