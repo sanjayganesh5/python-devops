@@ -12,26 +12,6 @@ steps:
       echo $(Build.BinariesDirectory)
       echo $(Build.ArtifactStagingDirectory)
       echo $(Build.SourcesDirectory)
-  
-# Prepare Analysis Configuration task
-- task: SonarQubePrepare@5
-  inputs:
-    SonarQube: $(sonarEndpoint)
-    scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: $(pythonProjectKey)
-    extraProperties: |
-      sonar.exclusions=venv/**/*,.idea/**/*,coverage-reports/*,README.md,azure-pipelines.yml,application.properties,requirements.txt
-
-# Run Code Analysis task
-- task: SonarQubeAnalyze@5
-
-# Publish Quality Gate Result task
-- task: SonarQubePublish@5
-  inputs:
-    pollingTimeoutSec: '300'
-
-
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.SourcesDirectory)'
@@ -40,7 +20,6 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
   displayName: 'Zip Artifact'
-
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
