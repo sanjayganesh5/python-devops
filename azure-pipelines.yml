@@ -42,7 +42,9 @@ steps:
   inputs:
     workingDirectory: '$(Build.SourcesDirectory)'
     script: |
-      sonar-scanner -X
+      sonar-scanner -X \
+      -Dsonar.sources=. \
+      -Dsonar.host.url=$(sonarUrl)
 
 - task: ArchiveFiles@2
   inputs:
