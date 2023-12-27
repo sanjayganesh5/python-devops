@@ -42,7 +42,7 @@ steps:
   inputs:
     workingDirectory: '$(Build.SourcesDirectory)'
     script: |
-      sonar-scanner \
+      sonar-scanner -X \
       -Dsonar.projectKey=$(sonarProjectKey) \
       -Dsonar.sources=. \
       -Dsonar.host.url=$(sonarUrl) \
