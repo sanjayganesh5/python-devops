@@ -20,17 +20,12 @@ def get_property(key: str) -> str:
 
 
 class CloudWatchHandler(logging.Handler):
-    def __init__(self, log_group, log_stream):
+    def __init__(self, log_group, log_stream, client):
         logging.Handler.__init__(self)
-        self.client = boto3.client('logs')
+        self.client = client
         self.log_group = log_group
         self.log_stream = log_stream
         self.formatter = logging.Formatter('%(funcName)s - %(levelname)s - %(message)s')
-        try:
-            response = self.client.create_log_stream(logGroupName=self.log_group, logStreamName=self.log_stream)
-            print(f'Created log stream {self.log_stream} in log group {self.log_group}. Response: {response}')
-        except self.client.exceptions.ResourceAlreadyExistsException:
-            print(f'Log stream {self.log_stream} already exists. Writing logs to it.')
 
     def emit(self, record):
         self.client.put_log_events(
@@ -58,5 +53,11 @@ def get_cloudwatch_logger(is_local=False, **kwargs):
     log_stream = f'{datetime.now().strftime("%Y-%m-%d_%H-%M-%f")}/[$Latest]{str(uuid.uuid4())}'
     logger = logging.getLogger(kwargs['name'])
     logger.setLevel(logging.INFO)
-    logger.addHandler(CloudWatchHandler(log_group, log_stream))
+    client = boto3.client('logs')
+    try:
+        response = client.create_log_stream(logGroupName=log_group, logStreamName=log_stream)
+        print(f'Created log stream {log_stream} in log group {log_group}. Response: {response}')
+    except client.exceptions.ResourceAlreadyExistsException:
+        print(f'Log stream {log_stream} already exists. Writing logs to it.')
+    logger.addHandler(CloudWatchHandler(log_group, log_stream, client))
     return logger
