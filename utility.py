@@ -3,12 +3,10 @@ import os
 import uuid
 import boto3
 import jproperties
-import pytz
 from datetime import datetime
 
 PROP_FILE = f'{os.path.dirname(os.path.abspath(__file__))}/application.properties'
 APP_ENV = os.environ['APP_ENV']
-logging.Formatter.converter = lambda *args: datetime.now(pytz.timezone('US/Eastern')).timetuple()
 
 
 def get_property(key: str) -> str:
@@ -43,6 +41,10 @@ class CloudWatchHandler(logging.Handler):
         )
 
 
+def get_log_stream_name():
+    return f'{datetime.now().strftime("%Y-%m-%d_%H-%M-%f")}/[$Latest]{str(uuid.uuid4())}'
+
+
 def get_cloudwatch_logger(is_local=False, **kwargs):
     if is_local:
         formatter = logging.Formatter('%(funcName)s - %(levelname)s - %(message)s')
@@ -53,7 +55,7 @@ def get_cloudwatch_logger(is_local=False, **kwargs):
         logger.addHandler(stream_handler)
         return logger
     log_group = kwargs.get('log_group')
-    log_stream = f'{datetime.now().strftime("%Y-%m-%d_%H-%M-%f")}/[$Latest]{str(uuid.uuid4())}'
+    log_stream = get_log_stream_name()
     logger = logging.getLogger(kwargs['name'])
     logger.setLevel(logging.INFO)
     logger.addHandler(CloudWatchHandler(log_group, log_stream))
