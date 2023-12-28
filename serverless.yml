@@ -16,12 +16,12 @@ provider:
             - logs:CreateLogGroup
             - logs:PutLogEvents
           Resource:
-            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.queueFunctionOne.Properties.LogGroupName}:*
-            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.queueFunctionTwo.Properties.LogGroupName}:*
-            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.jobFunctionOne.Properties.LogGroupName}:*
-            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.jobFunctionTwo.Properties.LogGroupName}:*
-            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.ccFunctionOne.Properties.LogGroupName}:*
-            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self.resources.Resources.ccFunctionTwo.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.queueFunctionOne.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.queueFunctionTwo.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.jobFunctionOne.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.jobFunctionTwo.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.ccFunctionOne.Properties.LogGroupName}:*
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.ccFunctionTwo.Properties.LogGroupName}:*
 
 functions:
   serverlessFunction:
@@ -41,32 +41,32 @@ resources:
     queueFunctionOne:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queue-function-one
+        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queueFunctionOne
         RetentionInDays: 30
     queueFunctionTwo:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queue-function-two
+        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queueFunctionTwo
         RetentionInDays: 30
     jobFunctionOne:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/job/${self:provider.stage}-job-function-one
+        LogGroupName: /aws/lambda/job/${self:provider.stage}-jobFunctionOne
         RetentionInDays: 30
     jobFunctionTwo:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/job/${self:provider.stage}-job-function-two
+        LogGroupName: /aws/lambda/job/${self:provider.stage}-jobFunctionTwo
         RetentionInDays: 30
     ccFunctionOne:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-cc-function-one
+        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-ccFunctionOne
         RetentionInDays: 30
     ccFunctionTwo:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-cc-function-two
+        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-ccFunctionTwo
         RetentionInDays: 30
 
 package:
