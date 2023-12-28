@@ -3,14 +3,14 @@ from utility import get_cloudwatch_logger, get_property
 
 APP_ENV = get_property('APP_ENV')
 IS_LOCAL = 'local' == APP_ENV
+logger = get_cloudwatch_logger(
+    name=__name__,
+    log_group=f'/aws/lambda/queue/{APP_ENV}-queueFunctionOne',
+    is_local=IS_LOCAL
+)
 
 
 def main(**kwargs):
-    logger = get_cloudwatch_logger(
-        name=__name__,
-        log_group=f'/aws/lambda/queue/{APP_ENV}-queueFunctionOne',
-        is_local=IS_LOCAL
-    )
     query_params = kwargs['query_params']
     body = kwargs['body']
     logger.info(f'query_params: {query_params}, body: {body}')
