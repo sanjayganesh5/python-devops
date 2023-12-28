@@ -51,7 +51,7 @@ def get_cloudwatch_logger(is_local=False, **kwargs):
         logger.addHandler(stream_handler)
         return logger
     log_group = kwargs.get('log_group')
-    log_stream = f'{datetime.now().strftime("%Y-%m-%d")}/[$Latest]{str(uuid.uuid4())}'
+    log_stream = f'{datetime.now().strftime("%Y-%m-%d_%H-%M-%f")}/[$Latest]{str(uuid.uuid4())}'
     logger = logging.getLogger(kwargs['name'])
     logger.setLevel(logging.INFO)
     logger.addHandler(CloudWatchHandler(log_group, log_stream))
