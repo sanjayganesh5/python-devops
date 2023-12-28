@@ -13,7 +13,6 @@ provider:
       statements:
         - Effect: "Allow"
           Action:
-            - logs:DescribeLogStreams
             - logs:CreateLogStream
             - logs:PutLogEvents
           Resource:
