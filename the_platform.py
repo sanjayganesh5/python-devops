@@ -21,11 +21,11 @@ def function_handler(url_path, event):
     function_name = function_name.replace('-', '_')
     try:
         if 'queue' in url_path:
-            api_function = getattr(importlib.import_module('queues'), function_name)
+            api_function = importlib.import_module(f'queues.{function_name}')
         elif 'job' in url_path:
-            api_function = getattr(importlib.import_module('jobs'), function_name)
+            api_function = importlib.import_module(f'jobs.{function_name}')
         elif 'custom-command' in url_path:
-            api_function = getattr(importlib.import_module('custom_commands'), function_name)
+            api_function = importlib.import_module(f'custom_commands.{function_name}')
         else:
             raise ModuleNotFoundError(f'{function_name} not found')
     except ModuleNotFoundError:
@@ -40,11 +40,11 @@ def api_handler(resource, function_name, event):
     print(f'function_name: {function_name}, event: {event}')
     try:
         if resource == 'queue':
-            api_function = getattr(importlib.import_module('queues'), function_name)
+            api_function = importlib.import_module(f'queues.{function_name}')
         elif resource == 'job':
-            api_function = getattr(importlib.import_module('jobs'), function_name)
+            api_function = importlib.import_module(f'jobs.{function_name}')
         elif resource == 'custom-command':
-            api_function = getattr(importlib.import_module('custom_commands'), function_name)
+            api_function = importlib.import_module(f'custom_commands.{function_name}')
         else:
             raise ModuleNotFoundError(f'{resource} not found')
     except ModuleNotFoundError:
