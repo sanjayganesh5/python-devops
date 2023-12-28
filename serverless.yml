@@ -13,7 +13,7 @@ provider:
       statements:
         - Effect: "Allow"
           Action:
-            - logs:CreateLogGroup
+            - logs:CreateLogStream
             - logs:PutLogEvents
           Resource:
             - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${self:resources.Resources.queueFunctionOne.Properties.LogGroupName}:*
