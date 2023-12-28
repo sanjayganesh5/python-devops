@@ -41,32 +41,32 @@ resources:
     queueFunctionOne:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queueFunctionOne
+        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queue-function-one
         RetentionInDays: 30
     queueFunctionTwo:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queueFunctionTwo
+        LogGroupName: /aws/lambda/queue/${self:provider.stage}-queue-function-two
         RetentionInDays: 30
     jobFunctionOne:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/job/${self:provider.stage}-jobFunctionOne
+        LogGroupName: /aws/lambda/job/${self:provider.stage}-job-function-one
         RetentionInDays: 30
     jobFunctionTwo:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/job/${self:provider.stage}-jobFunctionTwo
+        LogGroupName: /aws/lambda/job/${self:provider.stage}-job-function-two
         RetentionInDays: 30
     ccFunctionOne:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-ccFunctionOne
+        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-cc-function-one
         RetentionInDays: 30
     ccFunctionTwo:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-ccFunctionTwo
+        LogGroupName: /aws/lambda/custom-command/${self:provider.stage}-cc-function-two
         RetentionInDays: 30
 
 package:
