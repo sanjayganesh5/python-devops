@@ -3,7 +3,7 @@ from utility import get_cloudwatch_logger, get_property, CloudWatchHandler
 
 APP_ENV = get_property('APP_ENV')
 IS_LOCAL = 'local' == APP_ENV
-log_group = f'/aws/lambda/queue/{APP_ENV}-jobFunctionOne'
+log_group = f'/aws/lambda/job/{APP_ENV}-jobFunctionOne'
 
 
 def main(**kwargs):
