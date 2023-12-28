@@ -7,7 +7,7 @@ provider:
   region: ap-south-1
   stage: dev
   memorySize: 128
-  timeout: 10
+  timeout: 900
   iam:
     role:
       statements:
