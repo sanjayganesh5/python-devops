@@ -74,6 +74,7 @@ package:
     - README.md
     - azure-pipelines.yml
     - application.properties
+    - tests/**
     - coverage-reports/**
     - .gitignore
     - .git/**
