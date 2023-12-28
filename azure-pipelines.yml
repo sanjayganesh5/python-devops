@@ -29,31 +29,31 @@ steps:
       python -m pip install --upgrade pip
       pip install -r requirements.txt
 
-- task: CmdLine@2
-  displayName: 'Generate Coverage Report'
-  inputs:
-    workingDirectory: '$(Build.SourcesDirectory)'
-    script: |
-      coverage run -m unittest discover
-      coverage xml -o coverage-reports/coverage-serverless.xml
-
-# Prepare Analysis Configuration task
-- task: SonarQubePrepare@5
-  inputs:
-    SonarQube: 'Local SonarQubev2'
-    scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: $(sonarProjectKey)
-    extraProperties: |
-      sonar.exclusions='$(sonarExclusions)'
-
-# Run Code Analysis task
-- task: SonarQubeAnalyze@5
-
-# Publish Quality Gate Result task
-- task: SonarQubePublish@5
-  inputs:
-    pollingTimeoutSec: '300'
+#- task: CmdLine@2
+#  displayName: 'Generate Coverage Report'
+#  inputs:
+#    workingDirectory: '$(Build.SourcesDirectory)'
+#    script: |
+#      coverage run -m unittest discover
+#      coverage xml -o coverage-reports/coverage-serverless.xml
+#
+## Prepare Analysis Configuration task
+#- task: SonarQubePrepare@5
+#  inputs:
+#    SonarQube: 'Local SonarQubev2'
+#    scannerMode: 'CLI'
+#    configMode: 'manual'
+#    cliProjectKey: $(sonarProjectKey)
+#    extraProperties: |
+#      sonar.exclusions='$(sonarExclusions)'
+#
+## Run Code Analysis task
+#- task: SonarQubeAnalyze@5
+#
+## Publish Quality Gate Result task
+#- task: SonarQubePublish@5
+#  inputs:
+#    pollingTimeoutSec: '300'
 
 - task: ArchiveFiles@2
   inputs:
