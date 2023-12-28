@@ -3,10 +3,12 @@ import os
 import uuid
 import boto3
 import jproperties
+import pytz
 from datetime import datetime
 
 PROP_FILE = f'{os.path.dirname(os.path.abspath(__file__))}/application.properties'
 APP_ENV = os.environ['APP_ENV']
+logging.Formatter.converter = lambda *args: datetime.now(pytz.timezone('US/Eastern')).timetuple()
 
 
 def get_property(key: str) -> str:

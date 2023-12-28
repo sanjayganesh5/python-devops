@@ -29,7 +29,7 @@ def function_handler(url_path, event):
         else:
             raise ModuleNotFoundError(f'{function_name} not found')
     except ModuleNotFoundError:
-        return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{function_name} not found')
+        return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{url_path} not found')
     else:
         body = event['body']
         query_params = event['queryStringParameters']
@@ -48,7 +48,8 @@ def api_handler(resource, function_name, event):
         else:
             raise ModuleNotFoundError(f'{resource} not found')
     except ModuleNotFoundError:
-        return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{resource} not found')
+        return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE,
+                                body=f'{resource}.{function_name} not found')
     else:
         body = event['body']
         query_params = event['queryStringParameters']
@@ -72,4 +73,4 @@ def handler(event, context):
         if url_path:
             return function_handler(url_path, event)
         else:
-            return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{url_path} not found')
+            return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body='rawPath not found in event')
