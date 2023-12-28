@@ -56,6 +56,6 @@ def get_cloudwatch_logger(is_local=False, **kwargs):
         return logger
     logger = logging.getLogger(kwargs['name'])
     logger.setLevel(logging.INFO)
-    logging_handler = kwargs['custom_handler']
-    logger.addHandler(logging_handler)
+    custom_handler = kwargs['custom_handler']
+    logger.addHandler(custom_handler)
     return logger
