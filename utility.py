@@ -28,10 +28,15 @@ class CloudWatchHandler(logging.Handler):
         self.formatter = logging.Formatter('%(funcName)s - %(levelname)s - %(message)s')
 
     def emit(self, record):
+        # Check if the log stream already exists
         try:
+            self.client.describe_log_streams(
+                logGroupName=self.log_group,
+                logStreamNamePrefix=self.log_stream
+            )
+        except self.client.exceptions.ResourceNotFoundException:
+            # If the log stream doesn't exist, create a new one
             self.client.create_log_stream(logGroupName=self.log_group, logStreamName=self.log_stream)
-        except self.client.exceptions.ResourceAlreadyExistsException:
-            print(f'Log stream {self.log_stream} already exists. Writing logs to it.')
         self.client.put_log_events(
             logGroupName=self.log_group,
             logStreamName=self.log_stream,
