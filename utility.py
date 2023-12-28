@@ -6,13 +6,17 @@ import jproperties
 from datetime import datetime
 
 PROP_FILE = f'{os.path.dirname(os.path.abspath(__file__))}/application.properties'
+APP_ENV = os.environ['APP_ENV']
 
 
 def get_property(key: str) -> str:
-    configs = jproperties.Properties()
-    with open(PROP_FILE, 'rb') as config_file:
-        configs.load(config_file)
-    return configs.get(key).data
+    if APP_ENV == 'local':
+        configs = jproperties.Properties()
+        with open(PROP_FILE, 'rb') as config_file:
+            configs.load(config_file)
+        return configs.get(key).data
+    else:
+        return os.environ[key]
 
 
 class CloudWatchHandler(logging.Handler):
