@@ -19,7 +19,7 @@ def main(**kwargs):
         'statusCode': 200,
         'body': json.dumps(
             {
-                'message': 'job_one',
+                'message': 'queue_one',
                 'query_params': query_params,
                 'body': body
             }
