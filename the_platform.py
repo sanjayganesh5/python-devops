@@ -31,7 +31,7 @@ def function_handler(url_path, event):
     except ModuleNotFoundError:
         return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{url_path} not found')
     else:
-        body = event['body']
+        body = event.get('body', {})
         query_params = event['queryStringParameters']
         return api_function.main(query_params=query_params, body=body)
 
