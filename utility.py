@@ -3,7 +3,9 @@ import os
 import uuid
 import boto3
 import jproperties
+import requests
 from datetime import datetime
+from typing import Union
 
 PROP_FILE = f'{os.path.dirname(os.path.abspath(__file__))}/application.properties'
 APP_ENV = os.environ['APP_ENV']
@@ -18,6 +20,48 @@ def get_property(key: str) -> str:
         return configs.get(key).data
     else:
         return os.environ[key]
+
+
+def fetch_from_url(full_url: str) -> dict:
+    response = requests.get(full_url)
+    return response.json()
+
+
+def get_application_token() -> str:
+    """
+    The token has a validity of 5 minutes.
+    @return:
+    """
+    token_url = get_property('APPLICATION_TOKEN_URL')
+    token = fetch_from_url(token_url)
+    return token['token']
+
+
+def release_application_token(token: Union[str, None]):  # token parameter can be either a string or None
+    if token:
+        token_url = get_property('APPLICATION_RELEASE_URL')
+        full_url = f'{token_url}/{token}'
+        return fetch_from_url(full_url)
+    return None
+
+
+def get_from_application(**kwargs):
+    logger = kwargs['logger']
+    path_params = kwargs['path_params']  # example: video/123?name=abc
+    if kwargs['type'] == 'video':
+        video_url = get_property('VIDEO_URL')  # example: https://www.google.com
+        full_url = f'{video_url}/{path_params}'
+    elif kwargs['type'] == 'image':
+        image_url = get_property('IMAGE_URL')
+        full_url = f'{image_url}/{path_params}'
+    else:
+        full_url = None
+    logger.info(f'full_url: {full_url}')
+    return fetch_from_url(full_url)
+
+
+def update_to_application(update_url):
+    return fetch_from_url(update_url)
 
 
 def custom_response(**kwargs):
