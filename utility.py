@@ -51,13 +51,16 @@ class CustomLogger:
             print(message)
 
     def info(self, message):
-        formatted_message = f'{inspect.stack()} | ERROR | {message}'
+        function_name = inspect.currentframe().f_back.f_code.co_name  # get the name of the calling function
+        formatted_message = f'{function_name} | ERROR | {message}'
         self.__write_to_cloudwatch(formatted_message)
 
     def error(self, message):
-        formatted_message = f'{inspect.stack()} | ERROR | {message}'
+        function_name = inspect.currentframe().f_back.f_code.co_name  # get the name of the calling function
+        formatted_message = f'{function_name} | ERROR | {message}'
         self.__write_to_cloudwatch(formatted_message)
 
     def warning(self, message):
-        formatted_message = f'{inspect.stack()} | WARNING | {message}'
+        function_name = inspect.currentframe().f_back.f_code.co_name  # get the name of the calling function
+        formatted_message = f'{function_name} | WARNING | {message}'
         self.__write_to_cloudwatch(formatted_message)
