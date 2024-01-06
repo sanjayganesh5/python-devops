@@ -1,7 +1,6 @@
 import json
 import time
-
-from utility import get_property, CustomLogger
+from utility import get_property, custom_response, CustomLogger
 
 APP_ENV = get_property('APP_ENV')
 IS_LOCAL = 'local' == APP_ENV
@@ -19,13 +18,14 @@ def main(**kwargs):
     time.sleep(20)
     logger.info('woke up after 20 seconds')
     # end your code here
-    return {
-        'statusCode': 200,
-        'body': json.dumps(
+    return custom_response(
+        status_code=200,
+        content_type='application/json',
+        body=json.dumps(
             {
                 'message': 'job_one',
                 'query_params': query_params,
                 'body': body
             }
         )
-    }
+    )

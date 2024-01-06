@@ -1,17 +1,6 @@
 import importlib
 from urllib import parse
-
-TEXT_CONTENT_TYPE = 'text/plain'
-
-
-def handler_response(**kwargs):
-    return {
-        'statusCode': kwargs['status_code'],
-        'headers': {
-            'Content-Type': kwargs['content_type'],
-        },
-        'body': kwargs['body']
-    }
+from utility import custom_response, TEXT_CONTENT_TYPE
 
 
 def function_handler(url_path, event):
@@ -29,7 +18,7 @@ def function_handler(url_path, event):
         else:
             raise ModuleNotFoundError(f'{function_name} not found')
     except ModuleNotFoundError:
-        return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{url_path} not found')
+        return custom_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{url_path} not found')
     else:
         body = event.get('body', {})
         query_params = event['queryStringParameters']
@@ -48,8 +37,8 @@ def api_handler(resource, function_name, event):
         else:
             raise ModuleNotFoundError(f'{resource} not found')
     except ModuleNotFoundError:
-        return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE,
-                                body=f'{resource}.{function_name} not found')
+        return custom_response(status_code=404, content_type=TEXT_CONTENT_TYPE,
+                               body=f'{resource}.{function_name} not found')
     else:
         body = event['body']
         query_params = event['queryStringParameters']
@@ -66,11 +55,11 @@ def handler(event, context):
             function_name = parse.unquote(path_params['functionName'])
             return api_handler(resource, function_name.replace('-', '_'), event)
         else:
-            return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{resource} not found')
+            return custom_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body=f'{resource} not found')
     else:
         url_path = event['rawPath']
         print('url_path: ', url_path)
         if url_path:
             return function_handler(url_path, event)
         else:
-            return handler_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body='rawPath not found in event')
+            return custom_response(status_code=404, content_type=TEXT_CONTENT_TYPE, body='rawPath not found in event')

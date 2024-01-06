@@ -7,6 +7,7 @@ from datetime import datetime
 
 PROP_FILE = f'{os.path.dirname(os.path.abspath(__file__))}/application.properties'
 APP_ENV = os.environ['APP_ENV']
+TEXT_CONTENT_TYPE = 'text/plain'
 
 
 def get_property(key: str) -> str:
@@ -17,6 +18,24 @@ def get_property(key: str) -> str:
         return configs.get(key).data
     else:
         return os.environ[key]
+
+
+def custom_response(**kwargs):
+    """
+    Requires the following kwargs: status_code, content_type, body.
+    Convert the response text based on the content type before passing it as the value for the body in kwargs.
+    For example,
+    If the content type is application/json, then convert the body to json using json.dumps() method.
+    @param kwargs:
+    @return:
+    """
+    return {
+        'statusCode': kwargs['status_code'],
+        'headers': {
+            'Content-Type': kwargs['content_type'],
+        },
+        'body': kwargs['body']
+    }
 
 
 class CustomLogger:
@@ -52,7 +71,7 @@ class CustomLogger:
 
     def info(self, message):
         function_name = inspect.currentframe().f_back.f_code.co_name  # get the name of the calling function
-        formatted_message = f'{function_name} | ERROR | {message}'
+        formatted_message = f'{function_name} | INFO | {message}'
         self.__write_to_cloudwatch(formatted_message)
 
     def error(self, message):
