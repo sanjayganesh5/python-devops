@@ -22,8 +22,10 @@ def get_property(key: str) -> str:
         return os.environ[key]
 
 
-def fetch_from_url(full_url: str) -> dict:
-    response = requests.get(full_url)
+def fetch_from_url(url: str, headers: dict, params=None) -> dict:
+    if params is None:
+        params = {}
+    response = requests.get(url=url, headers=headers, params=params)
     return response.json()
 
 
@@ -33,7 +35,9 @@ def get_application_token() -> str:
     @return:
     """
     token_url = get_property('APPLICATION_TOKEN_URL')
-    token = fetch_from_url(token_url)
+    querystring = {"key": "GET:some-value"}
+    headers = {"Content-Type": 'application/json'}
+    token = fetch_from_url(url=token_url, headers=headers, params=querystring)
     return token['token']
 
 
